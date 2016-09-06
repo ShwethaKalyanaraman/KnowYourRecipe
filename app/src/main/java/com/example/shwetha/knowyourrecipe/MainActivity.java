@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
@@ -24,10 +26,12 @@ public class MainActivity extends AppCompatActivity {
         gv=(GridView) findViewById(R.id.gridView1);
         gv.setAdapter(new CustomAdapter(this, prgmNameList,prgmImages));
     }
-   /* @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem item=menu.findItem(R.id.menuSearch);
+        SearchView searchview= (SearchView) item.getActionView();
         return true;
-    }*/
+    }
 }
