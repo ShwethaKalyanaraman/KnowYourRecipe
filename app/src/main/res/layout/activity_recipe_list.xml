@@ -6,12 +6,12 @@
 
     tools:context="com.example.shwetha.knowyourrecipe.RecipeList">
 
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="New Text"
-        android:id="@+id/textView2"
-        android:layout_alignParentTop="true"
+        android:id="@+id/listView"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+         />
 </RelativeLayout>
