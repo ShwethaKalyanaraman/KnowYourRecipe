@@ -1,17 +1,23 @@
 package com.example.shwetha.knowyourrecipe;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by SHWETHA on 06-08-2016.
@@ -22,40 +28,42 @@ class Holder
     ImageView img;
     CheckBox check;
 }
-public class CustomAdapter extends BaseAdapter{
-
+public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
+    CustomFilter filter;
     String [] result;
     Context context;
-    int [] imageId;
+    private  ArrayList<list_info> searchArray;
+
+    private ArrayList<list_info> filterlist;
+    ArrayList<list_info> listofing;
     private static LayoutInflater inflater=null;
     public static ArrayList<String> ingredients_list=new ArrayList<String>();
-    public CustomAdapter(MainActivity mainActivity, String[] prgmNameList, int[] prgmImages) {
-        // TODO Auto-generated constructor stub
-        result=prgmNameList;
-        context=mainActivity;
-        imageId=prgmImages;
-        inflater = ( LayoutInflater )context.
-                getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+
+
+    public CustomAdapter(Context context,int R, ArrayList<list_info> listofing) {
+        super(context, R, listofing);
+        this.searchArray = listofing;
+        this.filterlist=listofing;
+        this.context = context;
+        inflater = LayoutInflater.from(context);
     }
 
-    @Override
+
+
+
     public int getCount() {
-        // TODO Auto-generated method stub
-        return result.length;
+        return searchArray.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        return position;
+    public list_info getItem(int position) {
+        return searchArray.get(position);
     }
 
-    @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
+
 
 
     @Override
@@ -70,17 +78,17 @@ public class CustomAdapter extends BaseAdapter{
         holder.check= (CheckBox)rowView.findViewById(R.id.checkBox1);
 
 
-        holder.tv.setText(result[position]);
-        holder.img.setImageResource(imageId[position]);
+        holder.tv.setText(searchArray.get(position).getIngredients());
+        holder.img.setImageResource(searchArray.get(position).getImgResID());
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.check.isChecked()) {
-                    ingredients_list.add(result[position]);
-                    Toast.makeText(context, "You Added " + result[position], Toast.LENGTH_SHORT).show();
+                    ingredients_list.add(searchArray.get(position).getIngredients());
+                    Toast.makeText(context, "You Added " + searchArray.get(position).getIngredients(), Toast.LENGTH_SHORT).show();
                 } else {
-                    ingredients_list.remove(result[position]);
-                    Toast.makeText(context, "You Removed " + result[position], Toast.LENGTH_SHORT).show();
+                    ingredients_list.remove(searchArray.get(position).getIngredients());
+                    Toast.makeText(context, "You Removed " + searchArray.get(position).getIngredients(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -97,4 +105,55 @@ public class CustomAdapter extends BaseAdapter{
         return rowView;
     }
 
+
+    @Override
+    public Filter getFilter() {
+        filter = new CustomFilter();
+        return filter;
+
+    }
+
+
+
+    class CustomFilter extends Filter {
+
+
+        @Override
+        protected FilterResults performFiltering(CharSequence cs) {
+            FilterResults results = new FilterResults();
+            if (cs != null && cs.length() > 0) {
+                cs = cs.toString().toLowerCase().trim();
+                Log.d("cs",cs.toString());
+                ArrayList<list_info> filter = new ArrayList<list_info>();
+                for (int i = 0; i < filterlist.size(); i++) {
+                    Log.d("IINn loop",filterlist.get(i).getIngredients());
+                    if (filterlist.get(i).getIngredients().toLowerCase().contains(cs) ) {
+                       list_info c = new list_info(filterlist.get(i).getIngredients(), filterlist.get(i).getImgResID());
+                        filter.add(c);
+                        Log.d("added",filterlist.get(i).getIngredients());
+
+                    }
+                }
+                results.count = filter.size();
+                if (results.count == 0) {
+
+                    filter.add(new list_info("No results found",0));
+
+                }
+                results.values = filter;
+
+            } else {
+                results.count = filterlist.size();
+                results.values = filterlist;
+
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence cs, FilterResults results) {
+            searchArray = (ArrayList<list_info>) results.values;
+            notifyDataSetChanged();
+        }
+    }
 }
