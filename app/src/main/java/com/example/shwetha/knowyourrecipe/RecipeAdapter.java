@@ -11,49 +11,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by User on 9/10/2016.
- */
-class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-    private String url;
-    private ImageView imageView;
-
-    public ImageLoadTask(String url, ImageView imageView) {
-        this.url = url;
-        this.imageView = imageView;
-    }
-
-    @Override
-    protected Bitmap doInBackground(Void... params) {
-        try {
-            URL urlConnection = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) urlConnection.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Bitmap result) {
-        super.onPostExecute(result);
-        imageView.setImageBitmap(result);
-    }
-
-}
 public class RecipeAdapter extends BaseAdapter {
     String[] recipe_name;
     String[] image_url;
+    AQuery listAq ;
+
     Context context;
     private static LayoutInflater recipe_inflater=null;
     public RecipeAdapter(String[] recipe_name, String[] image_url, Context context) {
@@ -61,6 +29,7 @@ public class RecipeAdapter extends BaseAdapter {
         this.image_url = image_url;
         this.context = context;
         recipe_inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        listAq= new AQuery(context);
     }
 
     @Override
@@ -84,16 +53,32 @@ public class RecipeAdapter extends BaseAdapter {
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Holder holder=new Holder();
-        View rowView;
 
-        rowView = recipe_inflater.inflate(R.layout.recipelist, null);
-        holder.tv=(TextView) rowView.findViewById(R.id.textView);
-        holder.img=(ImageView) rowView.findViewById(R.id.imageView);
 
-        holder.tv.setText(recipe_name[position]);
-        ImageLoadTask i= (ImageLoadTask) new ImageLoadTask(image_url[position],holder.img).execute();
+         ViewHolder holder;
 
-        return rowView;
+        if (convertView == null) {
+            convertView = recipe_inflater.inflate(R.layout.recipelist, null);
+            holder = new ViewHolder();
+            holder.img = (ImageView) convertView.findViewById(R.id.imageView);
+            holder.title = (TextView) convertView.findViewById(R.id.textView);
+
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        holder.title.setText(recipe_name[position]);
+
+        AQuery imgaq = listAq.recycle(convertView);
+        imgaq.id(holder.img).image(image_url[position], true, true, 0, 0, null, AQuery.FADE_IN_NETWORK, 1.0f);
+        return convertView;
+    }
+
+    private class ViewHolder{
+        ImageView img;
+        TextView title;
+
     }
 }
