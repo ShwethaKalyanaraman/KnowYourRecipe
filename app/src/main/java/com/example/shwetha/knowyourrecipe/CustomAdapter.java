@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.AQuery;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -32,6 +34,7 @@ public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
     CustomFilter filter;
     String [] result;
     Context context;
+    AQuery listq;
     private  ArrayList<list_info> searchArray;
 
     private ArrayList<list_info> filterlist;
@@ -47,6 +50,7 @@ public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
         this.filterlist=listofing;
         this.context = context;
         inflater = LayoutInflater.from(context);
+        listq=new AQuery(context);
     }
 
 
@@ -79,7 +83,8 @@ public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
 
 
         holder.tv.setText(searchArray.get(position).getIngredients());
-        holder.img.setImageResource(searchArray.get(position).getImgResID());
+        AQuery aq=listq.recycle(rowView);
+        aq.id(holder.img).image("https://spoonacular.com/cdn/ingredients_100x100/"+searchArray.get(position).getImgResID(), true, true, 0, 0, null, AQuery.FADE_IN_NETWORK, 1.0f);
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +142,7 @@ public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
                 results.count = filter.size();
                 if (results.count == 0) {
 
-                    filter.add(new list_info("No results found",0));
+                    filter.add(new list_info("No results found",null));
 
                 }
                 results.values = filter;

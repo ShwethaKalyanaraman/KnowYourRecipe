@@ -4,10 +4,13 @@ import android.content.Context;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +21,23 @@ import android.widget.GridView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.example.shwetha.knowyourrecipe.CustomAdapter.*;
 
@@ -46,7 +61,46 @@ int a;
         setContentView(R.layout.activity_main);
         adapter1 = new CustomAdapter(this,android.R.layout.activity_list_item,prgmNameList);
         gv = (GridView) findViewById(R.id.gridView1);
-        prgmNameList.add(new list_info("Salt",R.drawable.salt));
+
+      for(char i='a';i<='z';i++) {
+          String url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/food/ingredients/autocomplete?metaInformation=false&number=100&query="+i;
+          RequestQueue queue = Volley.newRequestQueue(this);
+          // Request a string response from the provided URL.
+          StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                  new Response.Listener<String>() {
+                      @Override
+                      public void onResponse(String response) {
+                          // Display the first 500 characters of the response string.
+                          try {
+                              JSONArray json = new JSONArray(response);
+                              JSONObject js = null;
+                              Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG);
+                              for (int i = 0; i < json.length(); i++) {
+                                  js = json.getJSONObject(i);
+                                  prgmNameList.add(new list_info(js.getString("name"), js.getString("image")));
+                              }
+
+                          } catch (Exception e) {
+                              e.printStackTrace();
+                          }
+                      }
+                  }, new Response.ErrorListener() {
+              @Override
+              public void onErrorResponse(VolleyError error) {
+                  Toast.makeText(getApplicationContext(), "This didnt work", Toast.LENGTH_SHORT);
+              }
+          }) {
+              @Override
+              public Map<String, String> getHeaders() throws AuthFailureError {
+                  Map<String, String> params = new HashMap();
+                  params.put("X-Mashape-Key", "W4HPADCRWsmshpoEWqR63e8Qh1V7p1r0QPkjsnLImLHCmXiT8M");
+                  params.put("Accept", "application/json");
+                  return params;
+              }
+          };
+          queue.add(stringRequest);
+      }
+        /*prgmNameList.add(new list_info("Salt",R.drawable.salt));
         prgmNameList.add(new list_info("Sugar",R.drawable.salt));
         prgmNameList.add(new list_info("Lemon",R.drawable.salt));
         prgmNameList.add(new list_info("Goat",R.drawable.salt));
@@ -54,7 +108,7 @@ int a;
         prgmNameList.add(new list_info("potato",R.drawable.salt));
         prgmNameList.add(new list_info("rice",R.drawable.salt));
         prgmNameList.add(new list_info("curd",R.drawable.salt));
-        prgmNameList.add(new list_info("water",R.drawable.salt));
+        prgmNameList.add(new list_info("water",R.drawable.salt));*/
        // gv.setAdapter(new CustomAdapter(this, prgmNameList, prgmImages));
           gv.setAdapter(adapter1);
         getRecipe = (Button) findViewById(R.id.btn_output);
