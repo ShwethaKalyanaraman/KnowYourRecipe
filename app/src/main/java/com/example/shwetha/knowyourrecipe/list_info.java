@@ -1,14 +1,16 @@
 package com.example.shwetha.knowyourrecipe;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by SHWETHA on 13-09-2016.
  */
 public class list_info {
 
     private String ingredients;
-    private int imgResID;
+    private String imgResID;
 
-    list_info(String ingredients,int imgResID)
+    list_info(String ingredients, String imgResID)
     {
 
         this.ingredients=ingredients;
@@ -18,11 +20,11 @@ public class list_info {
     }
 
 
-    public void setImgResID(int imgResID) {
+    public void setImgResID(String imgResID) {
         this.imgResID = imgResID;
     }
 
-    public int getImgResID() {
+    public String getImgResID() {
         return imgResID;
     }
 
