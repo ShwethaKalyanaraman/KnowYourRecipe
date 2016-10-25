@@ -63,7 +63,7 @@ int a;
         gv = (GridView) findViewById(R.id.gridView1);
 
       for(char i='a';i<='z';i++) {
-          String url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/food/ingredients/autocomplete?metaInformation=false&number=100&query="+i;
+          String url = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/food/ingredients/autocomplete?metaInformation=false&number=50&query="+i;
           RequestQueue queue = Volley.newRequestQueue(this);
           // Request a string response from the provided URL.
           StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

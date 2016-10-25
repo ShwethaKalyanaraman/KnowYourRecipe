@@ -103,7 +103,7 @@ public class CustomAdapter extends ArrayAdapter<list_info>implements Filterable{
             public void onClick(View v) {
                 // TODO Auto-generated method stub
 
-                Toast.makeText(context, "You Clicked " + result[position], Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You Clicked " + searchArray.get(position).getIngredients(), Toast.LENGTH_LONG).show();
             }
         });
 

@@ -1,7 +1,10 @@
 package com.example.shwetha.knowyourrecipe;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ public class RecipeList extends AppCompatActivity {
     TextView t;
     String[] imageurl=new String[30];
     String[] recipe_name=new String[30];
+    int[] id=new int[30];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,7 @@ public class RecipeList extends AppCompatActivity {
                                 js=json.getJSONObject(i);
                                 recipe_name[i]=js.getString("title");
                                 imageurl[i]=js.getString("image");
+                                id[i]=js.getInt("id");
                                 Toast.makeText(getApplicationContext(),recipe_name[i],Toast.LENGTH_LONG);
                             }
 
@@ -73,6 +78,20 @@ public class RecipeList extends AppCompatActivity {
         queue.add(stringRequest);
 
         list= (ListView) findViewById(R.id.listView);
-        list.setAdapter(new RecipeAdapter(recipe_name,imageurl,this));
+        list.setAdapter(new RecipeAdapter(recipe_name, imageurl, id, this));
+
+       list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id1) {
+              // Toast.makeText(getApplicationContext(),id[position]+" ",Toast.LENGTH_LONG).show();
+               Intent i=new Intent(getApplicationContext(),RecepieInfo.class);
+                i.putExtra("id",id[position]);
+                i.putExtra("name",recipe_name[position]);
+                i.putExtra("imageurl",imageurl[position]);
+
+                startActivity(i);
+
+            }
+        });
     }
 }
