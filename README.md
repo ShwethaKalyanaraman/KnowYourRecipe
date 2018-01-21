@@ -1,0 +1,2 @@
+# KnowYourRecipe
+<a href="https://snyk.io/test/github/shwethakalyanaraman/knowyourrecipe?targetFile=app%2Fbuild.gradle"><img src="https://snyk.io/test/github/shwethakalyanaraman/knowyourrecipe/badge.svg?targetFile=app%2Fbuild.gradle" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/shwethakalyanaraman/knowyourrecipe?targetFile=app%2Fbuild.gradle" style="max-width:100%;"></a>
